@@ -1,0 +1,9 @@
+
+*.un~
+*.tmp
+*.swp
+*.swo
+*.pyc
+*.log
+*.aux
+*.pdf

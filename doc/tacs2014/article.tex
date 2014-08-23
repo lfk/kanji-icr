@@ -1,0 +1,103 @@
+% Document title
+% ==============
+% Draft for conference/workshop paper to be submitted to http://tappcs.blogspot.mx/
+% 2--4 pages in Spanish or English.
+
+\documentclass[10pt,conference,a4paper]{IEEEtran}
+\usepackage{hyperref}
+%\usepackage{
+
+
+\title{Some Nice Title Goes Here, Eventually\ldots}
+
+\author{
+	\IEEEauthorblockN{Lars Fredrik Karlstr\"om}
+	\IEEEauthorblockA{Faculty of Science, Dept. of Computer Science\\ Universidad Aut\'onoma de Baja California\\ \texttt{fredrik.karlstrm@uabc.edu.mx}}
+	\and
+	\IEEEauthorblockN{Dr. Everardo Guti\'errez L\'opez}
+	\IEEEauthorblockA{Faculty of Science, Dept. of Computer Science\\ Universidad Aut\'onoma de Baja California\\ \texttt{your-cool-academic-email-here@uabc.edu.mx}}
+}
+
+%\markboth{TACS 2014 and more info here}{} % Only on journal papers, apparently...
+
+\begin{document}
+	\maketitle
+
+	\begin{abstract}
+		Oh golly, this is where the abstract should go.
+		``I can hardly wait to begin writing it!''
+		
+		Or well, let's see how things turn out in the body first, eh.
+	\end{abstract}
+	\medskip
+	\begin{IEEEkeywords}
+		Intelligent character recognition, Japanese writing, \ldots
+	\end{IEEEkeywords}
+
+
+	\section{Problem description}
+
+	Any form of digital handwriting recognition is a complex undertaking,
+	where the performance of the system is impacted by a multitude of factors -- spanning
+	everything from the quality and quantity of training data, to resilience toward input
+	translation, rotation, and noise. As the number of candidate categories increases
+	the size of the search space, however, the task quickly grows monumental.
+
+	The Japanese writing system consists of the two \emph{kana} syllabaries \emph{hiragana} and \emph{katakana},
+	as well as the sinographs commonly known as \emph{kanji} -- literally ``Han characters'' -- that stem from China.
+	The Japanese Ministry of Education's official ``regular use'' (j\=oy\=o) kanji list [ref] defines a set of 2,136
+	baseline characters taught in elementary-- and secondary--school education. This set is far from exhaustive though:
+	the Japanese Industrial Standard X 0208 encoding, for instance, contains 6,355 different kanji characters.
+
+	Given that the category search space for Japanese characters is an order of magnitude larger than its western counterparts,
+	it becomes apparent that a monolithic system design would be both unwieldly and computationally expensive, depending on
+	deep neural networks [ref?] for high performance.
+
+	In this work, we describe a flexble, modular design scheme that splits the identification task into coarse and fine steps,
+	thereby reducing the complexity of each component. The design scheme also permits replacing classification strategies,
+	and facilitates the parallelization of network training. 
+
+	 
+
+
+	\section{Previous work}
+
+	Thus concludes this tale of Foo Bar, whose epic journey had a tremendous
+	impact on the field of cryptography. Thank you, Foo, for your contributions.
+
+
+	\section{Proposed solution}
+
+	Some text here, followed by a diagram. Divide and conquer!
+
+	%\begin{figure}
+	%\centering
+	%\includegraphics[width=2.5in]{myfigure}
+	%\caption{Simulation Results}
+	%\label{fig_sim}
+	%\end{figure}
+
+	\subsection{Stroke feature extraction}
+
+	\subsection{Category clustering}
+
+	\subsection{Feedforward routing network}
+
+	\subsection{Convolutional character classification network}
+
+
+	\section{Experiments}
+
+	This will be a short section\ldots
+	Describe the simple online feature extractor and following clustering scheme.
+
+
+	\section{Conclusions}
+
+	This work is cool, now give complimentary M.Sc. plx?
+	They did it for Donald Knuth\ldots :(
+
+
+	\section{References}
+
+\end{document}
