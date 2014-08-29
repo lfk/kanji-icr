@@ -4,10 +4,17 @@
 % 2--4 pages in Spanish or English.
 
 \documentclass[10pt,conference,a4paper]{IEEEtran}
+\usepackage[utf8x]{inputenc}
 \usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage[T1]{fontenc}
 \bibliographystyle{IEEEtran}
-%\usepackage{
+
+% This enables the kanji in the table, but all typefaces turn uglier.
+% Also must be generated with xelatex
+%\usepackage{xeCJK}
+%\setCJKmainfont{cyberbit.ttf}
 
 
 \title{Some Nice Title Goes Here, Eventually\ldots}
@@ -17,7 +24,13 @@
 	\IEEEauthorblockA{Faculty of Science, Dept. of Computer Science\\ Universidad Aut\'onoma de Baja California\\ \href{mailto:fredrik.karlstrm@uabc.edu.mx}{\texttt{fredrik.karlstrm@uabc.edu.mx}}}
 	\and
 	\IEEEauthorblockN{Dr. Everardo Guti\'errez L\'opez}
-	\IEEEauthorblockA{Faculty of Science, Dept. of Computer Science\\ Universidad Aut\'onoma de Baja California\\ \href{mailto:foo@bar.com}{\texttt{your-cool-academic-email-here@uabc.edu.mx}}}
+	\IEEEauthorblockA{Faculty of Science, Dept. of Computer Science\\ Universidad Aut\'onoma de Baja California\\ \href{mailto:everardo.gutierrez@uabc.edu.mx}{\texttt{everardo.gutierrez@uabc.edu.mx}}}
+}
+
+\pgfplotsset{
+	compat = newest,
+	xlabel near ticks,
+	ylabel near ticks
 }
 
 %\markboth{TACS 2014 and more info here}{} % Only on journal papers, apparently...
@@ -31,7 +44,7 @@
 	\end{abstract}
 	\medskip
 	\begin{IEEEkeywords}
-		Intelligent character recognition, Japanese writing, \ldots
+		Intelligent character recognition, artificial neural network, handwriting recognition, Japanese writing, \ldots
 	\end{IEEEkeywords}
 
 
@@ -46,7 +59,7 @@
 	The Japanese writing system consists of the two \emph{kana} syllabaries \emph{hiragana} and \emph{katakana},
 	as well as the sinographs commonly known as \emph{kanji} -- literally ``Han characters'' -- that stem from China.
 	The Japanese Ministry of Education's official ``regular use'' (j\=oy\=o) kanji list defines a set of 2,136
-	baseline characters taught in elementary-- and secondary--school education. This set is far from exhaustive, though:
+	baseline characters taught in elementary-- and secondary--school education. \cite{hadamitzky2012japanese} This set is far from exhaustive, though:
 	the Japanese Industrial Standard X 0208 encoding, for instance, contains 6,355 different kanji.
 
 	Given that the category search space for Japanese characters is an order of magnitude larger than its western counterparts,
@@ -73,7 +86,11 @@
 	``Online Handwritten Kanji Recognition Based on Inter-stroke Grammar'' uses the A-H0-9 classification scheme,
 	and discusses the hierarchical structure of kanji.
 
-	Should we mention alternative solutions, such as SVMs?
+	``A linear--time elastic matching algorithm for on--line recognition of handwritten Japanese characters'' (Nakagawa)
+	presents the LTM--algorithm, an alternative and attractive way of extracting feature points.
+
+	Should we mention alternative solutions, such as SVMs? Tomoe does quite a good job, for instance. Not sure if there
+	are academic evaluations/references, though.
 
 
 
@@ -93,6 +110,12 @@
 
 	\subsection{Category clustering}
 
+	As is proven in \cite{drineas2004clustering}, this is an NP-hard problem even in the case of $k = 2$. 
+
+	Centroid-based clustering
+	"Seeks to minimize the average squared distance between points in the same cluster"
+	goal is to choose k centers so as to minimize $\varphi$, the total squared distance between each point and its closest center.
+
 	\subsection{Feedforward routing network}
 
 	\subsection{Convolutional character classification network}
@@ -109,6 +132,81 @@
 	25 dimensions, our initial feature extraction strategy provides a coarse full--stroke classification
 	in 8 dimensions. By discarding ``pen--up motions,'' we render the system more resilient to erroneous
 	stroke order, at the cost of increasing variability within each cluster.
+
+	\subsection{Clustering}
+
+	\ldots decided to consider the value given by the ``rule of thumb'' $k \approx \sqrt{n / 2}$ proposed in \cite{mardia2005multivariate}
+	as an upper limit to the number of clusters.
+
+	$$ k_{max} = \sqrt{6,396 / 2} \approx 57 $$
+
+	The clusters were generated using the k--means++ algorithm,
+	a variation of Lloyd's algorithm that seeks to improve the selection of the initial centroids. \cite{arthur2007k}
+
+
+
+Total strokes: 78785
+
+\begin{table}
+	\renewcommand{\arraystretch}{1.3}
+	\caption{Statistical overview of \ldots}
+	\label{tbl_stroke_analysis}
+	\centering
+	\begin{tabular}{ c | c c c c c l }
+		\hline
+		  & \bfseries \% & \small $\sum$ & $\mu$ & $\sigma$ & Highest count \\ 
+		\hline
+		\hline
+		\bfseries A & $33.20\%$ & $26,160$ & $4.09$ & $2.33$ & $15$ & \\%(蠶) \\
+		\bfseries B & $1.47\%$  & $1,159$  & $0.18$ & $0.40$ & $2$  & \\%(摑) \\
+		\bfseries C & $0.00\%$  & $0$      & --     & --     & --   & \\%     \\
+		\bfseries D & $0.00\%$  & $0$      & --     & --     & --   & \\%     \\
+		\bfseries E & $0.31\%$  & $245$    & $0.04$ & $0.19$ & $2$  & \\%(霪) \\
+		\bfseries F & $12.72\%$ & $10,018$ & $1.57$ & $1.36$ & $10$ & \\%(鏐) \\
+		\bfseries G & $29.98\%$ & $23,616$ & $3.69$ & $1.96$ & $13$ & \\%(鱸) \\
+		\bfseries H & $22.32\%$ & $17,587$ & $2.75$ & $1.61$ & $11$ & \\%(靆) \\
+		\hline
+		\hline
+	\end{tabular}
+\end{table}
+
+
+
+	% Statistical representation was close to perfect after the initial
+	% segment of some 3k kanji
+	\begin{tikzpicture}[font=\small]
+		\begin{axis}[
+			ybar,
+			bar width=20pt,
+			xlabel={Stroke feature classification},
+			ylabel={Frequency (\%)},
+			ymin=0,
+			ymax=40,
+			%ytick=\empty,
+			xtick=data,
+			axis x line=bottom,
+			axis y line=left,
+			enlarge x limits=0.2,
+			symbolic x coords={A, B, C, D, E, F, G, H},
+			xticklabel style={anchor=base, yshift=-\baselineskip},
+			nodes near coords={\pgfmathprintnumber\pgfplotspointmeta}
+		]
+			\addplot[fill=white] coordinates {
+				(A, 33.2)
+				(B, 1.5)
+				(C, 0)
+				(D, 0)
+				(E, 0.3)
+				(F, 12.7)
+				(G, 30.0)
+				(H, 22.3)
+			};
+		\end{axis}
+	\end{tikzpicture}
+
+	\subsection{Preliminary results}
+
+	Not done yet, but here we go.
 
 
 	\section{Conclusions}
