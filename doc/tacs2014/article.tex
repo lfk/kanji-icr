@@ -46,6 +46,7 @@
 	\end{IEEEkeywords}
 
 	\section{Introduction}
+	\label{sec:introduction}
 
 	%Although new technologies aimed at digitalizing every aspect of daily life are introduced and adopted at an ever--increasing pace,
 	%handwriting still remains an integral 
@@ -61,10 +62,20 @@
 	In \cite{dimond1957devices} (1957), T.L. Dimond summarized early character recognition efforts and introduced the Stylator, another input recognition device.
 	
 	The decades of research since has introduced a vast number of recognition techniques for writing in any and all forms; notable successful techniques in
-	widespread use today include support vector machines, hidden Markov models, and artificial neural networks. \cite{fujisawa2008forty} \cite{tappert1990state}
+	widespread use today include support vector machines, hidden Markov models, and artificial neural networks. \cite{fujisawa2008forty, tappert1990state}
+
+	This paper documents a work in progress on the topic intelligent handwriting recognition of Japanese characters.
+	The remainder of the article is structured as follows:
+	In section \ref{sec:problem_description} we present the Japanese writing system and outline the primary issues with handwriting recognition for asian script;
+	thereafter in \ref{sec:previous_work}, we discuss some notable advances aimed at solving various aspects of the aforementioned problems.
+	An explanation of the proposed solution is given in section \ref{sec:proposed_solution}, and an initial, experimental implementation is described in \ref{sec:experiments}
+	-- the results of which are recorded and examined in section \ref{sec:experiment_results}. Finally, conclusions and future work is presented in sections
+	\ref{sec:conclusions} and \ref{sec:future_work}, respectively.
+	
 
 
 	\section{Problem description}
+	\label{sec:problem_description}
 
 	Any form of digital handwriting recognition is a complex undertaking,
 	where the performance of the system is impacted by a multitude of factors -- spanning
@@ -80,16 +91,17 @@
 
 	Given that the category search space for Japanese characters is an order of magnitude larger than its western counterparts,
 	and that other characteristics must be taken into account, it becomes apparent that the same designs that
-	yields highly accurate results on the western alphabet will not perform satisfactory when applied to asian character recognition, \cite{tappert1990state}
-	unless it relies on complex, computationally expensive techniques such as for instance ``deep'' neural networks. \cite{ciresan2012multi}
+	yields highly accurate results on the latin alphabet will not perform satisfactory when applied to asian character recognition \cite{tappert1990state, liu2004online}
+	-- unless it relies on complex, computationally expensive techniques such as for instance ``deep'' neural networks. \cite{ciresan2012multi}
 
-	In this work, we describe a flexble, modular design scheme that splits the identification task into coarse and fine steps,
+	In continuation, we describe a flexble, modular design scheme that splits the identification task into coarse and fine steps,
 	thereby reducing the complexity of each undertaking. The design scheme also permits replacing classification strategies,
 	and facilitates the parallelization of network training.
 
 
 	 
 	\section{Previous work}
+	\label{sec:previous_work}
 
 	Testing a cite \cite{zhu2014robust}.
 
@@ -117,6 +129,7 @@
 
 
 	\section{Proposed solution}
+	\label{sec:proposed_solution}
 
 	\begin{figure}
 		\centering
@@ -169,6 +182,7 @@
 
 
 	\section{Experiments}
+	\label{sec:experiments}
 
 	This will be a short section\ldots
 	Describe the simple online feature extractor and following clustering scheme.
@@ -283,17 +297,20 @@
 	%\end{tikzpicture}
 
 	\section{Preliminary results}
+	\label{sec:experiment_results}
 
 	Not done yet, but here we go.
 
 
 	\section{Conclusions}
+	\label{sec:conclusions}
 
 	This work is cool, now give complimentary M.Sc. plx?
 	They did it for Donald Knuth\ldots :(
 
 
 	\section{Future work}
+	\label{sec:future_work}
 
 	The experimental results documented in this paper are an initial attempt at applying the proposed methodology;
 	numerous variations remain to be explored. With regard to online recognition, the explored feature extraction
