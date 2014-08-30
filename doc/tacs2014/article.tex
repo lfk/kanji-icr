@@ -23,7 +23,7 @@
 	\IEEEauthorblockN{Lars Fredrik Karlstr\"om}
 	\IEEEauthorblockA{Faculty of Science, Dept. of Computer Science\\ Universidad Aut\'onoma de Baja California\\ \href{mailto:fredrik.karlstrm@uabc.edu.mx}{\texttt{fredrik.karlstrm@uabc.edu.mx}}}
 	\and
-	\IEEEauthorblockN{Dr. Everardo Guti\'errez L\'opez}
+	\IEEEauthorblockN{Everardo Guti\'errez L\'opez}
 	\IEEEauthorblockA{Faculty of Science, Dept. of Computer Science\\ Universidad Aut\'onoma de Baja California\\ \href{mailto:everardo.gutierrez@uabc.edu.mx}{\texttt{everardo.gutierrez@uabc.edu.mx}}}
 }
 
@@ -32,8 +32,6 @@
 	xlabel near ticks,
 	ylabel near ticks
 }
-
-%\markboth{TACS 2014 and more info here}{} % Only on journal papers, apparently...
 
 \begin{document}
 	\maketitle
@@ -47,6 +45,24 @@
 		Intelligent character recognition, artificial neural network, handwriting recognition, Japanese writing, \ldots
 	\end{IEEEkeywords}
 
+	\section{Introduction}
+
+	%Although new technologies aimed at digitalizing every aspect of daily life are introduced and adopted at an ever--increasing pace,
+	%handwriting still remains an integral 
+
+	Although a variety of efficient digital input methods have become all but second nature to recent generations, for the vast majority,
+	handwriting remains an integral activity in daily life.
+	The importance to further improve upon the state of the art in handwriting recognition is underlined not only by the continued prevalence of 
+	handwriting, but also by the need to digitalize archived material, the significant role of handwriting in the development of fine motor skills,
+	and a variety of other areas of application, such as signature verification. \cite{plamondon2000online}
+
+	As an area of research, handwriting recognition predates even the digital computer. In 1888, Elisha Gray was awarded a patent \cite{gray1888telautograph}
+	for the ``Telautograph,'' which is considered a precursor to the stylus and digitizer.
+	In \cite{dimond1957devices} (1957), T.L. Dimond summarized early character recognition efforts and introduced the Stylator, another input recognition device.
+	
+	The decades of research since has introduced a vast number of recognition techniques for writing in any and all forms; notable successful techniques in
+	widespread use today include support vector machines, hidden Markov models, and artificial neural networks. \cite{fujisawa2008forty} \cite{tappert1990state}
+
 
 	\section{Problem description}
 
@@ -59,16 +75,18 @@
 	The Japanese writing system consists of the two \emph{kana} syllabaries \emph{hiragana} and \emph{katakana},
 	as well as the sinographs commonly known as \emph{kanji} -- literally ``Han characters'' -- that stem from China.
 	The Japanese Ministry of Education's official ``regular use'' (j\=oy\=o) kanji list defines a set of 2,136
-	baseline characters taught in elementary-- and secondary--school education. \cite{hadamitzky2012japanese} This set is far from exhaustive, though:
-	the Japanese Industrial Standard X 0208 encoding, for instance, contains 6,355 different kanji.
+	baseline characters taught in elementary-- and secondary--school education. \cite{hadamitzky2012japanese}
+	This set is far from exhaustive, though: the Japanese Industrial Standard X 0208 encoding, for instance, contains 6,355 different kanji.
 
 	Given that the category search space for Japanese characters is an order of magnitude larger than its western counterparts,
-	it becomes apparent that a monolithic system design would be both unwieldly and computationally expensive, requiring
-	deep neural networks \cite{ciresan2012multi} to attain high recognition rates.
+	and that other characteristics must be taken into account, it becomes apparent that the same designs that
+	yields highly accurate results on the western alphabet will not perform satisfactory when applied to asian character recognition, \cite{tappert1990state}
+	unless it relies on complex, computationally expensive techniques such as for instance ``deep'' neural networks. \cite{ciresan2012multi}
 
 	In this work, we describe a flexble, modular design scheme that splits the identification task into coarse and fine steps,
-	thereby reducing the complexity of each component. The design scheme also permits replacing classification strategies,
+	thereby reducing the complexity of each undertaking. The design scheme also permits replacing classification strategies,
 	and facilitates the parallelization of network training.
+
 
 	 
 	\section{Previous work}
@@ -82,6 +100,10 @@
 	substrokes, which in turn are employed as search keys in a character dictionary, this approach vastly
 	reduced the memory requirements for both their models and their dictionary.
 
+	
+	In \cite{yang2003accelerating}, clustering, offline recognition, first comparing input to centroid character,
+	therafter search within.
+
 
 	``Online Handwritten Kanji Recognition Based on Inter-stroke Grammar'' uses the A-H0-9 classification scheme,
 	and discusses the hierarchical structure of kanji.
@@ -89,24 +111,48 @@
 	``A linear--time elastic matching algorithm for on--line recognition of handwritten Japanese characters'' (Nakagawa)
 	presents the LTM--algorithm, an alternative and attractive way of extracting feature points.
 
-	Should we mention alternative solutions, such as SVMs? Tomoe does quite a good job, for instance. Not sure if there
+	Should we mention alternative solutions, such as SVMs? Zinnia (w/ Tomoe) does quite a good job, for instance. Not sure if there
 	are academic evaluations/references, though.
 
 
 
 	\section{Proposed solution}
 
-	Some text here, followed by a diagram. Divide and conquer!
-
 	\begin{figure}
 		\centering
 		\includegraphics[width=2.75in]{./fig/model-overview.eps}
-		\caption{Model overview. The input is first analyzed by the coarse classifier, resulting in the $<GHA\ldots>$ feature representation.
-		Thereafter, the routing network selects which cluster to search in, and the image data is passed to the corresponding CANN for fine--grain classification.}
+		\caption{The model consists of four components: a feature extractor, a clustering strategy,
+			a router (coarse classifier), and a fine--grained classifier.}
 		\label{fig_model_overview}
 	\end{figure}
 
+
+
+	By structuring the search space into mutually exclusive clusters of similar categories,
+	we are able to construct a corresponding number of fine classifiers that need only distinguish
+	between the categories within its own cluster. The smaller search space directly translates into a
+	significant reduction of model complexity, which in turn implies both a decrease in training time
+	and the possibility of higher accuracy rates. Furthermore, given that no category overlap exists
+	between the clusters, each fine classifier may be trained in parallel, and each model may be gradually
+	improved as new training data is made available.
+
+
+
+
 	\subsection{Feature extraction}
+
+	The input data is processed by an algorithm, generating a coarse, n--dimensional representation of its principal features.
+	The feature vector is used to select which cluster the input belongs to.
+	
+
+	A higher feature vector dimensionality allows for the construction of more finely--tuned clusters, but may well increase
+	the likelihood of ``misrouting,'' resulting in a failed classification.
+	% Actually, if a character is not found within the specified CANN, it could be passed to a neighboring cluster of similar composition
+
+	The coarse classifier may work on either online or offline input, or potentially a union of them both.
+	Examples of feature extractors include the LTM algorithm, and gradient--based solutions, both outlined in \cite{tanaka1999hybrid}.
+
+
 
 	\subsection{Category clustering}
 
@@ -118,6 +164,7 @@
 
 	\subsection{Feedforward routing network}
 
+
 	\subsection{Convolutional character classification network}
 
 
@@ -126,14 +173,58 @@
 	This will be a short section\ldots
 	Describe the simple online feature extractor and following clustering scheme.
 
-	\ldots
+	\begin{figure}
+		\centering
+		\includegraphics[width=2.75in]{./fig/experimental-implementation.eps}
+		\caption{Experimental implementation. The input is first analyzed by the coarse classifier, resulting in the $<GHA\ldots>$ feature representation.
+		Thereafter, the routing network selects which cluster to search in, and the image data is passed to the corresponding CANN for fine--grain classification.}
+		\label{fig_experimental_implementation}
+	\end{figure}
+
+
+
+	\subsection{Data sources}
+
+	KanjiVG \ldots
+
+
+	\subsection{Feature extraction}
+
+	Figure of A-H compass. Explanation.
+
+	\begin{table}
+		\renewcommand{\arraystretch}{1.3}
+		\caption{Stroke type frequency distribution overview }
+		\label{tbl_stroke_analysis}
+		\centering
+		\begin{tabular}{ c | c c c c c l }
+			\hline
+			  & \bfseries \% & \small $\sum$ & $\mu$ & $\sigma$ & Highest count \\ 
+			\hline
+			\hline
+			\bfseries A & $33.20\%$ & $26,160$ & $4.09$ & $2.33$ & $15$ & \\%(蠶) \\
+			\bfseries B & $1.47\%$  & $1,159$  & $0.18$ & $0.40$ & $2$  & \\%(摑) \\
+			\bfseries C & $0.00\%$  & $0$      & --     & --     & --   & \\%     \\
+			\bfseries D & $0.00\%$  & $0$      & --     & --     & --   & \\%     \\
+			\bfseries E & $0.31\%$  & $245$    & $0.04$ & $0.19$ & $2$  & \\%(霪) \\
+			\bfseries F & $12.72\%$ & $10,018$ & $1.57$ & $1.36$ & $10$ & \\%(鏐) \\
+			\bfseries G & $29.98\%$ & $23,616$ & $3.69$ & $1.96$ & $13$ & \\%(鱸) \\
+			\bfseries H & $22.32\%$ & $17,587$ & $2.75$ & $1.61$ & $11$ & \\%(靆) \\
+			\hline
+			            & $100.00\%$   & $78,785$ &        &        &      & \\
+			\hline
+		\end{tabular}
+	\end{table}
+
+
+
+	\subsection{Clustering}
 
 	Whereas in \cite{nakai2001substroke} strokes were segmented into substrokes and classified in
 	25 dimensions, our initial feature extraction strategy provides a coarse full--stroke classification
 	in 8 dimensions. By discarding ``pen--up motions,'' we render the system more resilient to erroneous
 	stroke order, at the cost of increasing variability within each cluster.
 
-	\subsection{Clustering}
 
 	\ldots decided to consider the value given by the ``rule of thumb'' $k \approx \sqrt{n / 2}$ proposed in \cite{mardia2005multivariate}
 	as an upper limit to the number of clusters.
@@ -143,68 +234,55 @@
 	The clusters were generated using the k--means++ algorithm,
 	a variation of Lloyd's algorithm that seeks to improve the selection of the initial centroids. \cite{arthur2007k}
 
+	Based on the information summarized in table \ref{tbl_stroke_analysis}, \ldots
 
+	Total strokes: 78785
 
-Total strokes: 78785
-
-\begin{table}
-	\renewcommand{\arraystretch}{1.3}
-	\caption{Statistical overview of \ldots}
-	\label{tbl_stroke_analysis}
-	\centering
-	\begin{tabular}{ c | c c c c c l }
-		\hline
-		  & \bfseries \% & \small $\sum$ & $\mu$ & $\sigma$ & Highest count \\ 
-		\hline
-		\hline
-		\bfseries A & $33.20\%$ & $26,160$ & $4.09$ & $2.33$ & $15$ & \\%(蠶) \\
-		\bfseries B & $1.47\%$  & $1,159$  & $0.18$ & $0.40$ & $2$  & \\%(摑) \\
-		\bfseries C & $0.00\%$  & $0$      & --     & --     & --   & \\%     \\
-		\bfseries D & $0.00\%$  & $0$      & --     & --     & --   & \\%     \\
-		\bfseries E & $0.31\%$  & $245$    & $0.04$ & $0.19$ & $2$  & \\%(霪) \\
-		\bfseries F & $12.72\%$ & $10,018$ & $1.57$ & $1.36$ & $10$ & \\%(鏐) \\
-		\bfseries G & $29.98\%$ & $23,616$ & $3.69$ & $1.96$ & $13$ & \\%(鱸) \\
-		\bfseries H & $22.32\%$ & $17,587$ & $2.75$ & $1.61$ & $11$ & \\%(靆) \\
-		\hline
-		\hline
-	\end{tabular}
-\end{table}
+	\begin{table}
+		\renewcommand{\arraystretch}{1.3}
+		\caption{Some form of cluster sample}
+		\label{tbl_sample_clusters}
+		\centering
+		\begin{tabular}{c}
+			We could list centroid info and some sample kanji. \\
+			But not \emph{all} the clusters, right? Too many\ldots \\
+		\end{tabular}
+	\end{table}
 
 
 
-	% Statistical representation was close to perfect after the initial
-	% segment of some 3k kanji
-	\begin{tikzpicture}[font=\small]
-		\begin{axis}[
-			ybar,
-			bar width=20pt,
-			xlabel={Stroke feature classification},
-			ylabel={Frequency (\%)},
-			ymin=0,
-			ymax=40,
-			%ytick=\empty,
-			xtick=data,
-			axis x line=bottom,
-			axis y line=left,
-			enlarge x limits=0.2,
-			symbolic x coords={A, B, C, D, E, F, G, H},
-			xticklabel style={anchor=base, yshift=-\baselineskip},
-			nodes near coords={\pgfmathprintnumber\pgfplotspointmeta}
-		]
-			\addplot[fill=white] coordinates {
-				(A, 33.2)
-				(B, 1.5)
-				(C, 0)
-				(D, 0)
-				(E, 0.3)
-				(F, 12.7)
-				(G, 30.0)
-				(H, 22.3)
-			};
-		\end{axis}
-	\end{tikzpicture}
 
-	\subsection{Preliminary results}
+	%\begin{tikzpicture}[font=\small]
+	%	\begin{axis}[
+	%		ybar,
+	%		bar width=20pt,
+	%		xlabel={Stroke feature classification},
+	%		ylabel={Frequency (\%)},
+	%		ymin=0,
+	%		ymax=40,
+	%		%ytick=\empty,
+	%		xtick=data,
+	%		axis x line=bottom,
+	%		axis y line=left,
+	%		enlarge x limits=0.2,
+	%		symbolic x coords={A, B, C, D, E, F, G, H},
+	%		xticklabel style={anchor=base, yshift=-\baselineskip},
+	%		nodes near coords={\pgfmathprintnumber\pgfplotspointmeta}
+	%	]
+	%		\addplot[fill=white] coordinates {
+	%			(A, 33.2)
+	%			(B, 1.5)
+	%			(C, 0)
+	%			(D, 0)
+	%			(E, 0.3)
+	%			(F, 12.7)
+	%			(G, 30.0)
+	%			(H, 22.3)
+	%		};
+	%	\end{axis}
+	%\end{tikzpicture}
+
+	\section{Preliminary results}
 
 	Not done yet, but here we go.
 
@@ -232,7 +310,7 @@ Total strokes: 78785
 
 
 
-	%\section{References}
+	% References
 	\bibliography{./references}
 
 \end{document}
