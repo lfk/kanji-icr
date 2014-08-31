@@ -98,14 +98,24 @@
 	baseline characters taught in elementary-- and secondary--school education. \cite{hadamitzky2012japanese}
 	This set is far from exhaustive, though: the Japanese Industrial Standard X 0208 encoding, for instance, contains 6,355 different kanji.
 
-	Given that the category search space for Japanese characters is an order of magnitude larger and contains a vastly differing set of
-	characteristics than its western counterparts, the same designs that yield highly accurate results on 
-	western handwriting recognition tasks will not perform satisfactory when applied to asian script \cite{jager2003state, tappert1990state, liu2004online}
-	-- unless the solution relies on complex and computationally expensive techniques, such as  ``deep'' neural networks. \cite{ciresan2012multi}
+	Although the characters are vast in number and differ significantly from one another in terms of complexity (see figures \ref{fig_kanji_sample}
+	and \ref{fig_kanji_stroke_hist}), the writing system itself is not arbitrary. Any kanji may be broken down into smaller units, known as graphemes, 
+	and they are commonly ``classified'' by basic, frequently--ocurring components referred to as radicals.
+	Furthermore, stroke order is dictated by a set of rules. In essence, kanji are written from top to bottom and left to right within imagined squares. \cite{foerster1994kanji}
 
-	In continuation, we describe a flexble, modular design scheme that splits the identification task into coarse and fine steps,
-	thereby reducing the complexity of each undertaking. The design scheme also permits replacing the segmentation and classification strategies,
-	and facilitates the parallelization of the fine classification components.
+	These properties are often leveraged in kanji recognition systems, but not without penalty: relying on the correct stroke order during online
+	recognition, for instance, severely impacts recognition rates when a user provides ``erroneous'' input -- even though it might still be \emph{visually} correct. \cite{shin2002optimal}
+
+	While certain aspects such as noise reduction and normalization remain similar across systems, the characteristics mentioned above result in
+	recognition systems designed for western input not performing satisfactorily when applied to asian script \cite{jager2003state, tappert1990state, liu2004online}
+	-- unless the solution relies on complex techniques such as  ``deep'' neural networks. \cite{ciresan2012multi}
+
+
+	%Given that the category search space for Japanese characters is an order of magnitude larger and contains a vastly differing set of
+	%characteristics than its western counterparts, the same designs that yield highly accurate results on 
+	%western handwriting recognition tasks do not perform satisfactorily when applied to asian script \cite{jager2003state, tappert1990state, liu2004online}
+	%-- unless the solution relies on complex and computationally expensive techniques, such as  ``deep'' neural networks. \cite{ciresan2012multi}
+
 
 	\begin{figure}
 		\centering
@@ -150,7 +160,7 @@
 				};
 			\end{axis}
 		\end{tikzpicture}
-		\caption{Distribution of 6,400 kanji by number of stroke. Min = 2, Max = 581. \emph{Data source: KanjiVG.} \cite{kanjivg}}
+		\caption{Distribution of 6,400 kanji by stroke count. Min = 2, Max = 581. \emph{Data source: KanjiVG.} \cite{kanjivg}}
 		\label{fig_kanji_stroke_hist}
 	\end{figure}
 
@@ -166,53 +176,32 @@
 	In \cite{joe1989large}, Mori and Joe present ``selective'' and ``integrative'' neural networks that 
 	segment categories into small groups, thereby improving the recognition rate of each network.
 
-
-	% Took A-H classification from here
-	In \cite{nakai2001substroke}, the authors adapt a continuous speech recognition algorithm utilizing
-	hidden Markov models for the purpose of online kanji recognition. Captured strokes are segmented into
-	substrokes and classified according to directionality (see figure \ref{fig_stroke_categories}),
-	and these characteristics are in turn employed as dictionary search keys.
-
-
+	
 	After structuring the search space by clustering, Yang et. al. perform two--stepped offline recognition by first
 	comparing the input character to the centroids of each cluster, and then distinguishing between the members of the cluster
-	whose centroid most closely matched the input. \cite{yang2003accelerating},
+	whose centroid most closely matched the input. \cite{yang2003accelerating}
 
 
-	In \emph{Hybrid pen-input character recognition system based on integration of online-offline recognition},
-	the authors integrate online and offline recognition strategies, leveraging the advantages of each technique.
-	In addition to a discussion of various integration techniques, two feature extraction methods are described: 
+	In \emph{Hybrid Pen--Input Character Recognition System Based on Integration of Online--Offline Recognition},
+	the authors present a system that leverages the advantages provided by each type of recognition.
+	In addition to a discussion of various integration techniques, two feature extraction methods are described in detail: 
 	a gradient--based technique for offline input, and a recursive substroke extractor for online input.
 
 
-
-	``Online Handwritten Kanji Recognition Based on Inter-stroke Grammar'' uses the A-H0-9 classification scheme,
-	and discusses the hierarchical structure of kanji.
-
-
-	Should we mention alternative solutions, such as SVMs? Zinnia (w/ Tomoe) does quite a good job, for instance. Not sure if there
-	are academic evaluations/references, though.
+	% Got A-H classification from here
+	In \cite{nakai2001substroke}, the authors adapt a continuous speech recognition algorithm utilizing
+	hidden Markov models for the purpose of online kanji recognition. Captured strokes are segmented into
+	substrokes and classified based on directionality (see figure \ref{fig_stroke_categories});
+	the result is thereafter employed as dictionary search keys.
 
 
+	\emph{Online Handwritten Kanji Recognition Based on Inter--Stroke Grammar} explains the hierarchical structure of kanji,
+	and explores how to leverage this information using stochastic context--free grammars. \cite{ota2007online}
 
-	\section{Proposed solution}
-	\label{sec:proposed_solution}
+	Finally, albeit not directly applied to Japanese handwriting recognition, \emph{Best Practices for Convolutional Neural Networks
+	Applied to Visual Document Analysis} by Simard, et. al. underlines the potential of convolutional neural networks 
+	and provides a variety of techniques and guidelines directly applicable to the development of a fine--grain classifier. \cite{simard2003best}
 
-	By structuring the search space into mutually exclusive clusters of similar categories,
-	we are able to construct a corresponding number of fine classifiers that need only distinguish
-	between the categories within its own cluster. The smaller search space directly translates into a
-	significant reduction of model complexity, which in turn implies both a decrease in training time
-	and the possibility of higher accuracy rates. Furthermore, given that no category overlap exists
-	between the clusters, each fine classifier may be trained in parallel, and each model may be gradually
-	improved as new training data is made available.
-
-	\begin{figure}
-		\centering
-		\includegraphics[width=2.75in]{./fig/model-overview.eps}
-		\caption{The model consists of four components: a feature extractor, a clustering strategy,
-			a router (coarse classifier), and a fine--grained classifier.}
-		\label{fig_model_overview}
-	\end{figure}
 
 	\begin{figure}
 		\centering
@@ -225,25 +214,60 @@
 
 
 
+	\section{Proposed solution}
+	\label{sec:proposed_solution}
+
+	Taking into consideration the issues presented in section \ref{sec:problem_description}
+	%the problem posed by the large number of candidates, the characteristics of the kanji writing system,
+	and the many influential works reviewed in section \ref{sec:previous_work}, we attempt to define a general description of a flexble, modular 
+	design scheme that splits the identification task into coarse and fine phases -- thereby reducing the complexity of each undertaking -- and 
+	additionally permits replacing the normalization, segmentation, and classification strategies.%, and facilitates the parallelization of fine classification.
+	The design is applicable to online as well as offline recognition tasks.
+
+	\begin{figure}[b]
+		\centering
+		\includegraphics[width=2.75in]{./fig/model-overview.eps}
+		\caption{The model consists of five components: input normalization methods, a feature extractor,
+			a clustering strategy, a router (coarse classifier), and a fine--grained classifier.}
+		\label{fig_model_overview}
+	\end{figure}
+
+
+	
+	\subsection{Input normalization}
+
+	Improving the input data, especially by making it more uniform with respect to available training data, has the potential
+	to greatly increase recognition rates. In the case of offline input, techniques include noise--reduction,
+	cropping, and scaling; for online input, strokes could be analyzed and altered on--the--fly to increase consistency.
+	Other possibilities include blurring or otherwise distorting input data in order to generalize it. \cite{razzak2009combining}
 
 
 
 	\subsection{Feature extraction}
 
-	The input data is processed by an algorithm, generating a coarse, n--dimensional representation of its principal features.
-	The feature vector is used to select which cluster the input belongs to.
-	
+	The feature extraction algoritm should take either online, offline, or combined input and rapidly generate
+	an n--dimensional vector representation of the provided data. The output should be sufficient for the
+	routing component to reliably distinguish within which candidate subset the fine classifier should search.
 
-	A higher feature vector dimensionality allows for the construction of more finely--tuned clusters, but may well increase
-	the likelihood of ``misrouting,'' resulting in a failed classification.
+	Generally speaking, a higher feature vector dimensionality would allow for the construction of more finely--tuned clusters,
+	but this might well increase the likelihood of misrouting.%, resulting in a failed classification.
 	% Actually, if a character is not found within the specified CANN, it could be passed to a neighboring cluster of similar composition
 
-	The coarse classifier may work on either online or offline input, or potentially a union of them both.
-	Examples of feature extractors include the LTM algorithm, and gradient--based solutions, both outlined in \cite{tanaka1999hybrid}.
+	Examples of feature extractors include recursive substroke segmentation and image gradation, both outlined in \cite{tanaka1999hybrid}.
 
 
 
 	\subsection{Category clustering}
+
+	By structuring the search space into mutually exclusive clusters of similar categories,
+	we are able to construct a corresponding number of fine classifiers that need only distinguish
+	between the categories within its own cluster. The smaller search space directly translates into a
+	significant reduction of model complexity, which in turn implies both a decrease in training time
+	and the possibility of higher accuracy rates. Furthermore, given that no category overlap exists
+	between the clusters, each fine classifier may be trained in parallel, and each model may be gradually
+	improved as new training data is made available.
+
+
 
 	As is proven in \cite{drineas2004clustering}, this is an NP-hard problem even in the case of $k = 2$. 
 
