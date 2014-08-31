@@ -64,11 +64,11 @@
 	The decades of research since has introduced a vast number of recognition techniques for writing in any and all forms; notable successful techniques in
 	widespread use today include support vector machines, hidden Markov models, and artificial neural networks. \cite{fujisawa2008forty, tappert1990state}
 
-	This paper documents a work in progress on the topic intelligent handwriting recognition of Japanese characters.
+	This paper documents a work in progress on the topic of intelligent handwriting recognition of Japanese characters.
 	The remainder of the article is structured as follows:
 	In section \ref{sec:problem_description} we present the Japanese writing system and outline the primary issues with handwriting recognition for asian script;
 	thereafter in \ref{sec:previous_work}, we discuss some notable advances aimed at solving various aspects of the aforementioned problems.
-	An explanation of the proposed solution is given in section \ref{sec:proposed_solution}, and an initial, experimental implementation is described in \ref{sec:experiments}
+	An explanation of our solution approach is given in section \ref{sec:proposed_solution}, and an initial, experimental implementation is described in \ref{sec:experiments}
 	-- the results of which are recorded and examined in section \ref{sec:experiment_results}. Finally, conclusions and future work is presented in sections
 	\ref{sec:conclusions} and \ref{sec:future_work}, respectively.
 
@@ -80,6 +80,8 @@
 		\label{fig_kanji_sample}
 	\end{figure}
 
+	\vfill
+
 
 	\section{Problem description}
 	\label{sec:problem_description}
@@ -87,7 +89,7 @@
 	Any form of digital handwriting recognition is a complex undertaking,
 	where the performance of the system is impacted by a multitude of factors -- spanning
 	everything from the quality and quantity of training data, to resilience toward input
-	translation, rotation, and noise. As the number of candidate categories increases
+	translation, rotation, and noise. As the number of candidate categories increase
 	the size of the search space, however, the task quickly grows monumental.
 
 	The Japanese writing system consists of the two \emph{kana} syllabaries \emph{hiragana} and \emph{katakana},
@@ -96,41 +98,97 @@
 	baseline characters taught in elementary-- and secondary--school education. \cite{hadamitzky2012japanese}
 	This set is far from exhaustive, though: the Japanese Industrial Standard X 0208 encoding, for instance, contains 6,355 different kanji.
 
-	Given that the category search space for Japanese characters is an order of magnitude larger than its western counterparts,
-	and that other characteristics must be taken into account, it becomes apparent that the same designs that
-	yields highly accurate results on the latin alphabet will not perform satisfactory when applied to asian character recognition \cite{tappert1990state, liu2004online}
-	-- unless it relies on complex, computationally expensive techniques such as for instance ``deep'' neural networks. \cite{ciresan2012multi}
+	Given that the category search space for Japanese characters is an order of magnitude larger and contains a vastly differing set of
+	characteristics than its western counterparts, the same designs that yield highly accurate results on 
+	western handwriting recognition tasks will not perform satisfactory when applied to asian script \cite{jager2003state, tappert1990state, liu2004online}
+	-- unless the solution relies on complex and computationally expensive techniques, such as  ``deep'' neural networks. \cite{ciresan2012multi}
 
 	In continuation, we describe a flexble, modular design scheme that splits the identification task into coarse and fine steps,
-	thereby reducing the complexity of each undertaking. The design scheme also permits replacing classification strategies,
-	and facilitates the parallelization of network training.
+	thereby reducing the complexity of each undertaking. The design scheme also permits replacing the segmentation and classification strategies,
+	and facilitates the parallelization of the fine classification components.
+
+	\begin{figure}
+		\centering
+		\begin{tikzpicture}[font=\small]
+			\begin{axis}[
+				ycomb,
+				xlabel={Number of strokes},
+				ylabel={Number of characters},
+			]
+				%\addplot[fill=white] coordinates {
+				\addplot [] coordinates {
+					(1, 6)
+					(2, 32)
+					(3, 64)
+					(4, 115)
+					(5, 151)
+					(6, 199)
+					(7, 318)
+					(8, 434)
+					(9, 473)
+					(10, 544)
+					(11, 581)
+					(12, 581)
+					(13, 532)
+					(14, 435)
+					(15, 434)
+					(16, 369)
+					(17, 299)
+					(18, 207)
+					(19, 175)
+					(20, 135)
+					(21, 106)
+					(22, 69)
+					(23, 49)
+					(24, 37)
+					(25, 20)
+					(26, 12)
+					(27, 8)
+					(28, 6)
+					(29, 3)
+					(30, 2)
+				};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Distribution of 6,400 kanji by number of stroke. Min = 2, Max = 581. \emph{Data source: KanjiVG.} \cite{kanjivg}}
+		\label{fig_kanji_stroke_hist}
+	\end{figure}
 
 
 
-
-	 
 	\section{Previous work}
 	\label{sec:previous_work}
 
-	Testing a cite \cite{zhu2014robust}.
+	A vast body of work has been amassed on the topic of Japanese handwriting recognition.
+	Here we summarize some notable publications that influenced our adopted approach.
 
-	\ldots
 
+	In \cite{joe1989large}, Mori and Joe present ``selective'' and ``integrative'' neural networks that 
+	segment categories into small groups, thereby improving the recognition rate of each network.
+
+
+	% Took A-H classification from here
 	In \cite{nakai2001substroke}, the authors adapt a continuous speech recognition algorithm utilizing
-	hidden Markov models for the purpose of online kanji recognition. By identifying and classifying
-	substrokes, which in turn are employed as search keys in a character dictionary, this approach vastly
-	reduced the memory requirements for both their models and their dictionary.
+	hidden Markov models for the purpose of online kanji recognition. Captured strokes are segmented into
+	substrokes and classified according to directionality (see figure \ref{fig_stroke_categories}),
+	and these characteristics are in turn employed as dictionary search keys.
 
-	
-	In \cite{yang2003accelerating}, clustering, offline recognition, first comparing input to centroid character,
-	therafter search within.
+
+	After structuring the search space by clustering, Yang et. al. perform two--stepped offline recognition by first
+	comparing the input character to the centroids of each cluster, and then distinguishing between the members of the cluster
+	whose centroid most closely matched the input. \cite{yang2003accelerating},
+
+
+	In \emph{Hybrid pen-input character recognition system based on integration of online-offline recognition},
+	the authors integrate online and offline recognition strategies, leveraging the advantages of each technique.
+	In addition to a discussion of various integration techniques, two feature extraction methods are described: 
+	a gradient--based technique for offline input, and a recursive substroke extractor for online input.
+
 
 
 	``Online Handwritten Kanji Recognition Based on Inter-stroke Grammar'' uses the A-H0-9 classification scheme,
 	and discusses the hierarchical structure of kanji.
 
-	``A linear--time elastic matching algorithm for on--line recognition of handwritten Japanese characters'' (Nakagawa)
-	presents the LTM--algorithm, an alternative and attractive way of extracting feature points.
 
 	Should we mention alternative solutions, such as SVMs? Zinnia (w/ Tomoe) does quite a good job, for instance. Not sure if there
 	are academic evaluations/references, though.
@@ -140,6 +198,14 @@
 	\section{Proposed solution}
 	\label{sec:proposed_solution}
 
+	By structuring the search space into mutually exclusive clusters of similar categories,
+	we are able to construct a corresponding number of fine classifiers that need only distinguish
+	between the categories within its own cluster. The smaller search space directly translates into a
+	significant reduction of model complexity, which in turn implies both a decrease in training time
+	and the possibility of higher accuracy rates. Furthermore, given that no category overlap exists
+	between the clusters, each fine classifier may be trained in parallel, and each model may be gradually
+	improved as new training data is made available.
+
 	\begin{figure}
 		\centering
 		\includegraphics[width=2.75in]{./fig/model-overview.eps}
@@ -148,15 +214,16 @@
 		\label{fig_model_overview}
 	\end{figure}
 
+	\begin{figure}
+		\centering
+		\includegraphics[width=1.75in]{./fig/stroke-categories.eps}
+		\caption{A stroke may be classified according to its directionality.
+			Further classes may be used to differentiate between long and short strokes,
+		or to accomodate for ``pen--up'' motions. Here, the strokes of the kanji ``ki'' (tree) are identified as A-G-F-H.}
+		\label{fig_stroke_categories}
+	\end{figure}
 
 
-	By structuring the search space into mutually exclusive clusters of similar categories,
-	we are able to construct a corresponding number of fine classifiers that need only distinguish
-	between the categories within its own cluster. The smaller search space directly translates into a
-	significant reduction of model complexity, which in turn implies both a decrease in training time
-	and the possibility of higher accuracy rates. Furthermore, given that no category overlap exists
-	between the clusters, each fine classifier may be trained in parallel, and each model may be gradually
-	improved as new training data is made available.
 
 
 
@@ -199,7 +266,7 @@
 	\begin{figure}
 		\centering
 		\includegraphics[width=2.75in]{./fig/experimental-implementation.eps}
-		\caption{Experimental implementation. The input is first analyzed by the coarse classifier, resulting in the $<GHA\ldots>$ feature representation.
+		\caption{Experimental implementation. The input is first analyzed by the coarse classifier, resulting in the G-H-A\ldots feature representation.
 		Thereafter, the routing network selects which cluster to search in, and the image data is passed to the corresponding CANN for fine--grain classification.}
 		\label{fig_experimental_implementation}
 	\end{figure}
@@ -259,8 +326,6 @@
 
 	Based on the information summarized in table \ref{tbl_stroke_analysis}, \ldots
 
-	Total strokes: 78785
-
 	\begin{table}
 		\renewcommand{\arraystretch}{1.3}
 		\caption{Some form of cluster sample}
@@ -271,7 +336,6 @@
 			But not \emph{all} the clusters, right? Too many\ldots \\
 		\end{tabular}
 	\end{table}
-
 
 
 
