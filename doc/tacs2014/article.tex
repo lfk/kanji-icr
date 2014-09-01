@@ -5,7 +5,7 @@
 
 \documentclass[10pt,conference,a4paper]{IEEEtran}
 \usepackage[utf8x]{inputenc}
-\usepackage[hidelinks]{hyperref}
+\usepackage[hidelinks,pdftex]{hyperref}
 \usepackage{graphicx}
 \usepackage{pgfplots}
 \usepackage[T1]{fontenc}
@@ -16,8 +16,20 @@
 %\usepackage{xeCJK}
 %\setCJKmainfont{cyberbit.ttf}
 
+\hypersetup{
+	pdftitle    = {A Modular Handwritten Kanji Recognition Schema},
+	pdfauthor   = {Lars Fredrik Karlstr\"om and Everardo Guti\'errez L\'opez},
+	pdfsubject  = {Workshop paper on the development of a modular design schema for handwritten kanji recognition.},
+	pdfkeywords = {
+		{Intelligent character recognition}
+		{Handwriting recognition}
+		{Kanji recognition}
+		{Artificial neural network}
+	},
+}
 
-\title{Some Nice Title Goes Here, Eventually\ldots}
+
+\title{A Modular Handwritten Kanji Recognition Schema}
 
 \author{
 	\IEEEauthorblockN{Lars Fredrik Karlstr\"om}
@@ -39,7 +51,7 @@
 	\begin{abstract}
 		Handwriting continues to play a significant role in daily life, warranting continued research in the field of intelligent character recognition.
 		Due to their vast number of symbols, east asian scripts such as Japanese remain challenging to process efficiently with high accuracy.
-		In this work, we formulate a modular design scheme based on reviews of previous work and the characteristics of the Japanese kanji sinographs.
+		In this work, we formulate a modular design schema based on reviews of previous work and the characteristics of the Japanese kanji sinographs.
 		We also describe an ongoing effort to implement and evaluate a basic proof-of-concept handwriting recognition system based on artificial neural networks.
 
 
@@ -223,9 +235,9 @@
 	%Taking into consideration the issues presented in section \ref{sec:problem_description}
 	Taking the issues presented in section \ref{sec:problem_description} and the many influential works reviewed in section \ref{sec:previous_work}
 	into consideration, an attempt is made to define a general description of a flexble, modular 
-	design scheme that splits the identification task into coarse and fine phases---thereby reducing the complexity of each undertaking---and 
+	design schema that splits the identification task into coarse and fine phases---thereby reducing the complexity of each undertaking---and 
 	additionally permits replacing the normalization, segmentation, and classification strategies. %, and facilitates the parallelization of fine classification.
-	The design scheme is applicable to systems performing online as well as offline recognition tasks.
+	The design schema is applicable to systems performing online as well as offline recognition tasks.
 
 	\begin{figure}[b]
 		\centering
@@ -302,7 +314,7 @@
 	\section{Experiments \& preliminary results}
 	\label{sec:experiments}
 
-	Based on the design scheme outlined in the previous section, we are currently in the process of implementing 
+	Based on the design schema outlined in the previous section, we are currently in the process of implementing 
 	a basic online kanji recognition system which we aim to evaluate on established testing benchmarks
 	as well as in the form of a mobile application. The diagram in figure \ref{fig_experimental_implementation} 
 	explains how the components interact.
@@ -384,7 +396,7 @@
 
 	\subsection{Routing}
 
-	Initially, three simple routing schemes are being applied: a lookup table, a function that
+	Initially, three simple routing strategies are being applied: a lookup table, a function that
 	identifies the most similar centroid, and a feedforward neural network. One auxiliary goal
 	at this stage---in particular with the ANN---is creating some degree of resilience to errors
 	such as a missing or incorrectly traced strokes.
@@ -420,7 +432,7 @@
 	At the CANN recognition level, there is ample opportunity both to tweak the network topology and to 
 	to apply a variety of best practices \cite{simard2003best} in order to enhance the final, fine--grain recognition results.
 
-	By developing and interchanging a series of new, differing components, we ultimately hope to validate the design scheme described in section \ref{sec:proposed_solution}. 
+	By developing and interchanging a series of new, differing components, we ultimately hope to validate the design schema described in section \ref{sec:proposed_solution}. 
 
 
 	\section{Summary}
@@ -428,8 +440,8 @@
 
 	In this paper we provide a general formulation of kanji handwriting recognition systems that encompass a wide range
 	of techniques and use cases, based on an evaluation of the properties and problematics presented by the Japanese writing system,
-	and the review of multiple designs in a corpus of prior work. We also describe our ongoing efforts
-	of applying this design scheme to a basic recognition system, which we aim to continue iterating upon in future works.
+	and the review of multiple designs in a corpus of prior work. We also describe ongoing efforts
+	of applying this design schema to a basic recognition system, which will be continuously iterating upon in future works.
 
 
 
