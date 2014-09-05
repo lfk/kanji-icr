@@ -51,9 +51,10 @@
 	\begin{abstract}
 		Handwriting continues to play a significant role in daily life, warranting continued research in the field of intelligent character recognition.
 		%Due to their vast number of symbols, east asian scripts such as Japanese remain challenging to process efficiently with high accuracy.
-		East asian scripts, such as Japanese, still remain challenging to process efficiently with high accuracy due to their vast number of symbols.
-		In this work, we formulate a modular design schema based on reviews of previous work and the characteristics of the Japanese kanji sinographs.
-		We also describe an ongoing effort to implement and evaluate a basic proof-of-concept handwriting recognition system based on artificial neural networks.
+		East asian scripts, such as Japanese, remain challenging to process efficiently with high accuracy due to their vast number of symbols.
+		In this work, a modular design schema based on reviews of previous work and the characteristics of the Japanese kanji sinographs is presented, along with
+		the description of an ongoing effort to implement and evaluate a basic handwriting recognition system that incorporates online feature extraction,
+		category clustering, and artificial neural networks.
 
 
 	\end{abstract}
@@ -187,8 +188,8 @@
 	\label{sec:previous_work}
 
 	A vast body of work has been amassed on the topic of Japanese handwriting recognition.
-	This section provides a summary of publications dealing with our principal issues of interest,
-	and whose findings motivates this proposal.
+	This section provides a summary of publications dealing with many principal issues of interest,
+	whose findings motivate this proposal.
 	%Here we summarize some notable publications that influenced our adopted approach.
 
 
@@ -227,7 +228,8 @@
 		\caption{A stroke may be classified according to its directionality.
 			Further classes may be used to differentiate between long and short strokes,
 		or to accomodate for pen-up motions. Here, the strokes of the kanji ``ki'' (tree) are identified as A-G-F-H.
-		The dotted lines illustrate the pen-up motions that implicitly connect each successive stroke.}
+		The dotted lines illustrate the pen-up motions that implicitly connect each successive stroke. Taking these motions into account,
+		the label for the same kanji is A-4-G-3-F-2-H.}
 		\label{fig_stroke_categories}
 	\end{figure}
 
@@ -319,9 +321,7 @@
 	\section{Experiments \& preliminary results}
 	\label{sec:experiments}
 
-	%Based on the design schema outlined in the previous section, we are currently in the process of implementing 
-	%a basic online kanji recognition system which we aim to evaluate on established testing benchmarks
-	A basic online kanji recognition system based on the design schema outlined in the previous section is
+	An online kanji recognition system based on the design schema outlined in the previous section is
 	currently being implemented. This system will be evaluated on established testing benchmarks
 	as well as in the form of a mobile application. The diagram in figure \ref{fig_experimental_implementation} 
 	explains how the components interact.
@@ -344,11 +344,13 @@
 	\subsection{Feature extraction}
 
 	With the intent of progressively improving the various facets of the system,
-	the first feature extractor was made as simple as possible: each stroke is directly
+	the first feature extractor was made as straightforward as possible: each stroke is directly
 	classified with a letter as illustrated in figure \ref{fig_stroke_categories} based solely
 	on its start and endpoints. Table \ref{tbl_stroke_analysis} contains a summary of the
 	result of classifying the 6,400 elements in the KanjiVG dataset in this manner.
-	We speculate that excluding pen-up motions will result in a more error-resilient system.
+	%We speculate that excluding pen-up motions will result in a more error-resilient system.
+	Intuitively, excluding pen-up motions should result in a more error-resilient system, due to
+	the correct order of the strokes not being taken into account.
 
 
 	\begin{table}[b]
@@ -408,7 +410,8 @@
 
 	\subsection{Fine-grained classification}
 
-	We are currently designing and evaluating convolutional neural networks to perform final, visual comparisons.
+	%We are currently designing and evaluating convolutional neural networks to perform final, visual comparisons.
+	Current efforts are focused on designing and evaluating convolutional neural networks to perform final, visual comparisons.
 	\mbox{Convolutional} neural networks are known to provide a measure of resilience against translation and rotation,
 	thus lending themselves well to the task of offline character recognition.
 	
@@ -422,7 +425,7 @@
 
 
 
-	\section{Summary \& future work}
+	\section{Future work}
 	\label{sec:future_work}
 
 	The experiments documented in this paper are an initial \mbox{attempt} at implementing a kanji handwriting recognition \mbox{system}
@@ -438,19 +441,11 @@
 	Another venue would be developing a cascading clustering system with multiple coarse lookups, aimed at further
 	reducing the size of the fine-grained classifier's search space.
 	
-	At the CANN recognition level, there is ample opportunity both to tweak the network topology and to 
-	to apply a variety of best practices \cite{simard2003best} in order to enhance the final, fine-grain recognition results.
+	At the fine-grained recognition level, there is ample opportunity both to iterate upon the current convolutional neural network
+	approach---refining the network topology and applying a variety of best practices \cite{simard2003best} in order to enhance the 
+	recognition results---and to pursue other recognition techniques, such as hidden Markov models and support vector machines.
+	
 
-	By developing and interchanging a series of new, differing components, we ultimately hope to validate the design schema described in section \ref{sec:proposed_solution}. 
-
-
-	%\section{Summary}
-	%\label{sec:summary}
-	%
-	%In this paper we provide a general formulation of kanji handwriting recognition systems that encompass a wide range
-	%of techniques and use cases, based on an evaluation of the properties and problematics presented by the Japanese writing system,
-	%and the review of multiple designs in a corpus of prior work. We also describe ongoing efforts
-	%of applying this design schema to a basic recognition system, which will be continuously iterating upon in future works.
 
 
 	% References
