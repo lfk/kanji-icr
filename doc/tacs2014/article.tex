@@ -50,14 +50,12 @@
 
 	\begin{abstract}
 		Handwriting continues to play a significant role in daily life, warranting continued research in the field of intelligent character recognition.
-		%Due to their vast number of symbols, east asian scripts such as Japanese remain challenging to process efficiently with high accuracy.
 		East asian scripts, such as Japanese, remain challenging to process efficiently with high accuracy due to their vast number of symbols.
 		In this work, a modular design schema based on reviews of previous work and the characteristics of the Japanese kanji sinographs is presented, along with
 		the description of an ongoing effort to implement and evaluate a handwriting recognition system that incorporates online feature extraction,
 		category clustering, and artificial neural networks.
-
-
 	\end{abstract}
+
 	\medskip
 	\begin{IEEEkeywords}
 		Intelligent character recognition, handwriting recognition, kanji recognition, artificial neural network.
@@ -70,14 +68,14 @@
 	handwriting remains an integral activity in daily life.
 	The importance to further improve upon the state-of-the-art in handwriting recognition is underlined not only by the continued prevalence of 
 	handwriting, but also by the need to digitalize archived material, its significant role in the development of fine motor skills,
-	and a variety of other areas of application, such as signature verification. \cite{plamondon2000online}
+	and a variety of other areas of application, such as signature verification \cite{plamondon2000online}.
 
 	As an area of research, handwriting recognition predates even the digital computer. In 1888, Elisha Gray was awarded a patent %\cite{gray1888telautograph}
 	for the Telautograph, which is considered a precursor to the stylus and digitizer, and in
-	a 1957 publication, T. L. Dimond summarized early character recognition efforts and introduced the Stylator, an early input recognition device. \cite{dimond1957devices}
+	a 1957 publication, T. L. Dimond summarized early character recognition efforts and introduced the Stylator, an early input recognition device \cite{dimond1957devices}.
 	
-	The decades of research since has introduced a vast number of recognition techniques for writing in any and all forms, with noteworthy successful techniques
-	currently in widespread use including support vector machines, hidden Markov models, and artificial neural networks. \cite{fujisawa2008forty, tappert1990state}
+	The decades of research since has introduced a vast number of recognition methods for writing in any and all forms, with noteworthy successful techniques
+	currently in widespread use including support vector machines, hidden Markov models, and artificial neural networks \cite{fujisawa2008forty, tappert1990state}.
 
 	This paper documents a work in progress on the topic of intelligent handwriting recognition of Japanese characters.
 	The remainder of the article is structured as follows:
@@ -113,20 +111,20 @@
 	The Japanese writing system consists of the two \emph{kana} syllabaries \emph{hiragana} and \emph{katakana},
 	as well as the sinographs commonly known as \emph{kanji}---literally ``Han characters''---that stem from China.
 	The Japanese Ministry of Education's \mbox{official} ``regular use'' (j\=oy\=o) kanji list defines a set of 2,136
-	baseline characters taught in elementary and secondary education. \cite{hadamitzky2012japanese}
+	baseline characters taught in elementary and secondary education \cite{hadamitzky2012japanese}.
 	This set is far from exhaustive, though: the Japanese Industrial Standard X 0208 encoding, for instance, contains 6,355 different kanji.
 
 	Although the characters are vast in number and differ significantly from one another in terms of complexity (see figures \ref{fig_kanji_sample}
 	and \ref{fig_kanji_stroke_hist}), the writing system itself is not arbitrary. Any kanji may be broken down into smaller units, known as graphemes, 
-	and they are commonly ``classified'' by basic, frequently occurring components referred to as radicals.
-	Furthermore, stroke order is dictated by a set of rules. In essence, kanji are written from top to bottom and left to right within imagined squares. \cite{foerster1994kanji}
+	and they are commonly classified by basic, frequently occurring components referred to as radicals.
+	Furthermore, stroke order is dictated by a set of rules. In essence, kanji are written from top to bottom and left to right within imaginary squares \cite{foerster1994kanji}.
 
 	These properties are often leveraged in kanji recognition systems, but not without penalty: relying on the correct stroke order during online
-	recognition, for instance, severely impacts recognition rates when a user provides erroneous input---even though it may still be \emph{visually} correct. \cite{shin2002optimal}
+	recognition, for instance, severely impacts recognition rates when a user provides erroneous input---even though it may still appear to be \emph{visually} correct \cite{shin2002optimal}.
 
-	While certain aspects such as noise reduction and normalization remain similar across systems, the characteristics mentioned above result in
+	While certain aspects such as noise reduction and normalization strategies remain similar across systems, the aforementioned characteristics result in
 	recognition systems designed for western input not performing satisfactorily when applied to east asian script \cite{jager2003state, tappert1990state}%, liu2004online}
-	---unless the solution relies on complex techniques such as  ``deep'' neural networks. \cite{ciresan2012multi}
+	---unless the solution relies on complex techniques such as  ``deep'' neural networks \cite{ciresan2012multi}.
 
 
 	%Given that the category search space for Japanese characters is an order of magnitude larger and contains a vastly differing set of
@@ -178,7 +176,7 @@
 				};
 			\end{axis}
 		\end{tikzpicture}
-		\caption{Distribution of 6,400 kanji by stroke count. \emph{Source: KanjiVG.} \cite{kanjivg}}
+		\caption{Distribution of 6,400 kanji by stroke count. \emph{Source: KanjiVG} \cite{kanjivg}.}
 		\label{fig_kanji_stroke_hist}
 	\end{figure}
 
@@ -199,13 +197,13 @@
 	
 	After structuring the search space by clustering, Yang et al. perform two-stepped offline recognition by first
 	comparing the input character to the centroids of each cluster, and then distinguishing between the members of the cluster
-	whose centroid most closely matched the input. \cite{yang2003accelerating}
+	whose centroid most closely matched the input \cite{yang2003accelerating}.
 
 
 	In \emph{Hybrid Pen-Input Character Recognition System Based on Integration of Online-Offline Recognition},
 	the authors present a system that leverages the advantages provided by each type of recognition.
 	In addition to a discussion of various integration techniques, two feature extraction methods are described in detail: 
-	a gradient-based technique for offline input, and a recursive substroke extractor for online input. \cite{tanaka1999hybrid}
+	a gradient-based technique for offline input, and a recursive substroke extractor for online input \cite{tanaka1999hybrid}.
 
 
 	% Got A-H classification from here
@@ -216,10 +214,10 @@
 
 
 	\emph{Online Handwritten Kanji Recognition Based on Inter-Stroke Grammar} explains the hierarchical structure of kanji,
-	and explores how to leverage this information using stochastic context-free grammars. \cite{ota2007online}
+	and explores how to leverage this information using stochastic context-free grammars \cite{ota2007online}.
 
-	Finally, \emph{Best Practices for Convolutional Neural Networks Applied to Visual Document Analysis} by Simard, et al. underlines the
-	potential of convolutional neural networks and provides a variety of techniques and guidelines directly applicable to the development of a fine-grain classifier. \cite{simard2003best}
+	Finally, \emph{Best Practices for Convolutional Neural Networks Applied to Visual Document Analysis} by Simard, et al. outlines the
+	potential of convolutional neural networks and provides a variety of techniques and guidelines directly applicable to the development of a fine-grain classifier \cite{simard2003best}.
 
 
 	\begin{figure}
@@ -260,7 +258,7 @@
 	Improving the input data, especially by making it more uniform with respect to available training data, has the potential
 	to greatly increase recognition rates. In the case of offline input, techniques include noise reduction,
 	cropping, and scaling; for online input, strokes may be analyzed and altered on-the-fly to increase consistency.
-	Other possibilities include blurring or otherwise distorting input data in order to generalize it. \cite{razzak2009combining}
+	Other possibilities include blurring or otherwise distorting input data in order to generalize it \cite{razzak2009combining}.
 
 
 
@@ -284,7 +282,7 @@
 	between the symbols within their respective cluster may be constructed.
 	Partitions could either be mutually exclusive or contain some degree of overlap.
 
-	K-means clustering is often employed for this type of segmentation task, as is the LGB algorithm. \cite{yang2003accelerating}
+	K-means clustering is often employed for this type of segmentation task, as is the Linde-Buzo-Gray algorithm.% \cite{yang2003accelerating}.
 	%It is worth mentioning that optimally allocating $n$ elements in $k$ partitions is an NP-hard problem, even in the case of $k = 2$. \cite{drineas2004clustering}
 
 	
@@ -301,10 +299,10 @@
 	\subsection{Routing}
 
 	Acting upon the vector provided by the feature extractor, the router---or coarse classifier---should indicate
-	within which partition the category corresponding to the input is most likely located. This component could
+	within which partition the category corresponding to the input is most likely located. his component could
 	be contrived to indicate not only one but multiple targets in order to dampen the effect of erroneous routing.
 
-	A 2014 publication by Zhu and Nakagawa documents the use of genetic algorithms to programmatically generate robust coarse classifiers. \cite{zhu2014robust}
+	A 2014 publication by Zhu and Nakagawa documents the use of genetic algorithms to programmatically generate robust coarse classifiers \cite{zhu2014robust}.
 
 
 	\subsection{Fine-grained classification}
@@ -318,13 +316,14 @@
 
 
 
-	\section{Experiments \& preliminary results}
+	%\section{Experiments \& preliminary results}
+	\section{Experimental design \& preliminary results}
 	\label{sec:experiments}
 
 	An online kanji recognition system based on the design schema outlined in the previous section is
 	currently being implemented. This system will be evaluated on established testing benchmarks
-	as well as in the form of a mobile application. The diagram in figure \ref{fig_experimental_implementation} 
-	explains how the components interact.
+	as well as in the form of a mobile application. The diagram presented in figure \ref{fig_experimental_implementation} 
+	explains how the various components interact.
 
 	\begin{figure}
 		\centering
@@ -345,12 +344,11 @@
 
 	With the intent of progressively improving the various facets of the system,
 	the first feature extractor was made as straightforward as possible: each stroke is directly
-	classified with a letter as illustrated in figure \ref{fig_stroke_categories} based solely
-	on its start and endpoints. Table \ref{tbl_stroke_analysis} contains a summary of the
+	classified with a letter, as illustrated in figure \ref{fig_stroke_categories}, based solely
+	on its start and endpoints. Table \ref{tbl_stroke_analysis} presents a statistical overview of the
 	result of classifying the 6,400 elements in the KanjiVG dataset in this manner.
-	%We speculate that excluding pen-up motions will result in a more error-resilient system.
 	Intuitively, excluding pen-up motions should result in a more error-resilient system, due to
-	the correct order of the strokes not being taken into account.
+	the \emph{correct order} of the strokes not being taken into account.
 
 
 	\begin{table}[b]
@@ -381,24 +379,12 @@
 	\subsection{Category clustering}
 
 	Equipped with their respective feature vectors, the 6,400 categories were partitioned into 50
-	mutually exclusive clusters using the K-means++ algorithm. \cite{arthur2007k}
+	mutually exclusive clusters using the K-means++ algorithm \cite{arthur2007k}.
 	Based on the information provided
-	in table \ref{tbl_stroke_analysis}, only the five dimensions A, B, F, G, and H were utilized as sorting parameters.
+	in table \ref{tbl_stroke_analysis}, only the five significant dimensions A, B, F, G, and H were utilized as sorting parameters.
 	The number of clusters was determined empirically, using Mardia's rule of thumb \mbox{$k \approx \sqrt{n / 2}$} \cite{mardia2005multivariate}
 	as an upper limit.
 	
-
-	%\begin{table}
-	%	\renewcommand{\arraystretch}{1.3}
-	%	\caption{Some form of cluster sample}
-	%	\label{tbl_sample_clusters}
-	%	\centering
-	%	\begin{tabular}{c}
-	%		We could list centroid info and some sample kanji. \\
-	%		But not \emph{all} the clusters\ldots TMI. \\
-	%	\end{tabular}
-	%\end{table}
-
 
 	\subsection{Routing}
 
@@ -406,30 +392,40 @@
 	identifies the most similar centroid, and a feedforward neural network. One auxiliary goal
 	at this stage---in particular with the ANN---is creating some degree of resilience to errors
 	such as a missing or incorrectly traced strokes.
+	A differing aspect at this stage compared to previous works is the vastly decreased number
+	of input features being considered, e.g. 8 versus 256 in \cite{yang2003accelerating}.
 
 
 	\subsection{Fine-grained classification}
 
-	%We are currently designing and evaluating convolutional neural networks to perform final, visual comparisons.
 	Current efforts are focused on designing and evaluating convolutional neural networks to perform final, visual comparisons.
 	\mbox{Convolutional} neural networks are known to provide a measure of resilience against translation and rotation,
-	thus lending themselves well to the task of offline character recognition.
+	thus lending themselves well to offline character recognition tasks.
 	
-	As previously stated, the comparatively small set of candidates (in current experiments averaging 128 kanji)
-	implies that each cluster model requires a lower degree of complexity. It may also be expected that---seeing
-	how each partition is likely to contain many similar-looking characters---the networks will be more likely
-	to correctly discern between more minute differences that might have been generalized away in a larger-scale network.
+	The comparatively small number of category candidates per cluster (in current experiments averaging 128 kanji)
+	implies that each model will require a lower degree of complexity. Furthermore, as it is probable that each
+	partition will contain many similar-looking categories, it follows that the networks may be more likely to correctly
+	discern between more minute differences that might have been generalized away in larger-scale topologies.
+	These properties may lead to desireable reductions in execution time and storage space requirements,
+	without considerable negative impact on recognition rates.
 
-	Finally, by focusing solely on offline recognition at this stage, a significantly larger body of training data
-	---such as the ETL character database, which contains hundreds of thousands of handwritten kanji samples \cite{yamamoto1986recognition}---may be utilized. 
+
+	%As previously stated, the comparatively small set of category candidates (in current experiments averaging 128 kanji)
+	%implies that each cluster model requires a lower degree of complexity. It may also be expected that---seeing
+	%how each partition is likely to contain many similar-looking characters---the networks will be more likely
+	%to correctly discern between more minute differences that might have been generalized away in a larger-scale network.
+
+
+	Finally, by focusing solely on offline character recognition at this stage, a significantly larger body of training data---such
+	as the ETL character database, which contains hundreds of thousands of handwritten kanji samples \cite{yamamoto1986recognition}---may be utilized. 
 
 
 
 	\section{Future work}
 	\label{sec:future_work}
 
-	The experiments documented in this paper are an initial \mbox{attempt} at implementing a kanji handwriting recognition \mbox{system}
-	based on the outlined design methodology---numerous venues still remain to be explored.
+	The experiments documented in this paper are an initial and ongoing attempt at implementing a kanji handwriting recognition \mbox{system}
+	based on the outlined design methodology; numerous venues still remain to be explored.
 	
 	With regard to online recognition, for instance, the feature extraction strategy could be enhanced to break strokes into
 	substrokes, diffentiate between long and short strokes, and take pen-up movements into account.
@@ -445,7 +441,6 @@
 	approach---refining the network topology and applying a variety of best practices \cite{simard2003best} in order to enhance the 
 	recognition results---and to pursue other recognition techniques, such as hidden Markov models and support vector machines.
 	
-
 
 
 	% References
